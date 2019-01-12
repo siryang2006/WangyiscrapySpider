@@ -1,3 +1,4 @@
+#scrapy crawl wangyiScrapy -a start_urls=https://news.163.com/
 # -*- coding: utf-8 -*-
 from scrapy.contrib.linkextractors import LinkExtractor
 from scrapy.contrib.spiders import CrawlSpider,Rule
@@ -7,8 +8,12 @@ import scrapy
 
 class WangyiscrapySpider(scrapy.Spider):
     name = 'wangyiScrapy'
-    allowed_domains = ['news.163.com']
-    start_urls = ['https://news.163.com/']
+    def __init__(self, start_urls=None, *args, **kwargs):
+        super(WangyiscrapySpider, self).__init__(*args, **kwargs)
+        self.allowed_domains = ['news.163.com']
+        self.start_urls = [start_urls]#['https://news.163.com/']
+
+    
     #custom_settings = {
     #    "USER_AGENT": "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36",
     #}
