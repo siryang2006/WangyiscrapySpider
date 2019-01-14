@@ -7,6 +7,9 @@ import scrapy
 
 class WangyiscrapySpider(scrapy.Spider):
     name = 'wangyiScrapy'
+    scrapyed_urls_set = {};
+    to_scrapy_urls_set = {};
+
     def __init__(self, allowed_domains=None, start_urls=None, *args, **kwargs):
         super(WangyiscrapySpider, self).__init__(*args, **kwargs)
         self.allowed_domains = [allowed_domains]#['news.163.com']
@@ -17,13 +20,24 @@ class WangyiscrapySpider(scrapy.Spider):
     #}
 
     def parse(self, response):
+        if self.scrapyed_urls_set.has_key(response.url) == False:
+            self.scrapyed_urls_set[response.url] = 1
+        if self.to_scrapy_urls_set.has_key(response.url) == True:
+            self.to_scrapy_urls_set.pop(response.url)
+        json = "{'url' : "+response.url+",'html': "+response.body.decode('gbk')+"}";
+
+        print(json)
+        
         urls = response.xpath('//a/@href').extract()
         for i in range(0, len(urls)):
             if urls[i].find(self.allowed_domains[0]) != -1:
-                print urls[i]
-                if urls[i].find(".html") != -1 or urls[i].find(".htm") != -1:
-                    print response.body.decode('gbk')
-                yield scrapy.Request(url = urls[i],callback = self.parse)
+                if self.scrapyed_urls_set.has_key(urls[i]) == False and self.to_scrapy_urls_set.has_key(urls[i]) == False:
+                    self.to_scrapy_urls_set[urls[i]] = 1
+                    print urls[i]
+                    #if urls[i].find(".html") != -1 or urls[i].find(".htm") != -1:
+                    #    print response.body.decode('gbk')
+        
+        yield scrapy.Request(url = self.to_scrapy_urls_set.keys()[0],callback = self.parse)
 
         #print urls
         pass
