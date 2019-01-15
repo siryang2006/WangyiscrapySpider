@@ -4,11 +4,13 @@ from scrapy.contrib.linkextractors import LinkExtractor
 from scrapy.contrib.spiders import CrawlSpider,Rule
 from scrapy.contrib.linkextractors.sgml import SgmlLinkExtractor
 import scrapy
+from es import ElasticObj 
 
 class WangyiscrapySpider(scrapy.Spider):
     name = 'wangyiScrapy'
     scrapyed_urls_set = {};
     to_scrapy_urls_set = {};
+    es_obj = ElasticObj()
 
     def __init__(self, allowed_domains=None, start_urls=None, *args, **kwargs):
         super(WangyiscrapySpider, self).__init__(*args, **kwargs)
@@ -24,10 +26,10 @@ class WangyiscrapySpider(scrapy.Spider):
             self.scrapyed_urls_set[response.url] = 1
         if self.to_scrapy_urls_set.has_key(response.url) == True:
             self.to_scrapy_urls_set.pop(response.url)
-        json = "{'url' : "+response.url+",'html': "+response.body.decode('gbk')+"}";
+        #json = "{'url' : "+response.url+",'html': "+response.body.decode('gbk')+"}";
+        #print(json)
+        self.es_obj.insert(response.url, response.body.decode('gbk'));
 
-        print(json)
-        
         urls = response.xpath('//a/@href').extract()
         for i in range(0, len(urls)):
             if urls[i].find(self.allowed_domains[0]) != -1:
