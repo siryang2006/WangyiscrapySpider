@@ -69,3 +69,38 @@ sudo systemctl enable kibana
 # 设置防火墙 
 sudo firewall-cmd --add-port=5601/tcp --permanent
 sudo firewall-cmd --reload
+
+#redis
+#redis官网地址：http://www.redis.io/
+#    最新版本：2.8.3
+#    在Linux下安装Redis非常简单，具体步骤如下（官网有说明）：#
+#     1、下载源码，解压缩后编译源码。#
+$ wget http://download.redis.io/releases/redis-2.8.3.tar.gz#
+$ tar xzf redis-2.8.3.tar.gz#
+$ cd redis-2.8.3
+$ make
+
+#2、编译完成后，在Src目录下，有四个可执行文件redis-server、redis-benchmark、redis-cli和redis.conf。然后拷贝到一个目录下。
+
+mkdir /usr/redis
+cd ./src
+cp redis-server /usr/redis
+cp redis-benchmark /usr/redis
+cp redis-cli /usr/redis
+cd ..
+cp redis.conf /usr/redis
+cd /usr/redis
+
+#3、启动Redis服务。
+$ redis-server redis.conf
+#4、然后用客户端测试一下是否启动成功。
+
+$ redis-cli
+
+redis> set foo bar
+
+OK
+
+redis> get foo
+
+"bar"

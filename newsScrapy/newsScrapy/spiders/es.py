@@ -10,13 +10,16 @@ class ElasticObj:
         #self.es.indices.create(index='html-index', ignore)
 
     def insert(self, url, title, body):
-            data = {
-                "@timestamp":datetime.now().strftime("%Y-%m-%dT%H:%M:%S.000+0800"),
-                "url":url,
-                "title":title,
-                "body":body
-            }
-            self.es.index(index="html-index", doc_type="html", body=data)
+        if not body:
+            return;
+
+        data = {
+            "@timestamp":datetime.now().strftime("%Y-%m-%dT%H:%M:%S.000+0800"),
+            "url":url,
+            "title":title,
+            "body":body
+        }
+        self.es.index(index="html-index", doc_type="html", body=data)
 
 #obj = ElasticObj()
 #obj.insert("testurl", "test html<body></body>");

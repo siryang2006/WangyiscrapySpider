@@ -8,7 +8,7 @@ from es import ElasticObj
 from lxml import etree
 #from bs4 import BeautifulSoup
 
-
+from UrlObject import UrlObject
 from scrapy.selector import Selector
 
 class WangyiscrapySpider(scrapy.Spider):
@@ -16,6 +16,8 @@ class WangyiscrapySpider(scrapy.Spider):
     scrapyed_urls_set = {};
     to_scrapy_urls_set = {};
     es_obj = ElasticObj()
+
+    url_object = UrlObject()
 
     def __init__(self, allowed_domains=None, start_urls=None, *args, **kwargs):
         super(WangyiscrapySpider, self).__init__(*args, **kwargs)
@@ -42,12 +44,13 @@ class WangyiscrapySpider(scrapy.Spider):
 
         urls = response.xpath('//a/@href').extract()
         for i in range(0, len(urls)):
+            self.url_object.insert(urls[i]);
             if urls[i].find(self.allowed_domains[0]) != -1:
                 if self.scrapyed_urls_set.has_key(urls[i]) == False and self.to_scrapy_urls_set.has_key(urls[i]) == False:
                     self.to_scrapy_urls_set[urls[i]] = 1
                     #print urls[i]
         
-        yield scrapy.Request(url = self.to_scrapy_urls_set.keys()[0], callback = self.parse)
+        #yield scrapy.Request(url = self.to_scrapy_urls_set.keys()[0], callback = self.parse)
 
         #print urls
 
@@ -59,7 +62,7 @@ class WangyiscrapySpider(scrapy.Spider):
         if title:
             title = title[0].xpath('string(.)')
         content = selector.xpath('//*[@id="endText"]')
-        
+
         if content:
             content = content[0].xpath('string(.)').extract()[0]
 
