@@ -57,6 +57,11 @@ wget https://artifacts.elastic.co/downloads/kibana/kibana-6.1.0-x86_64.rpm
  # 安装
 sudo rpm -ivh kibana-6.1.0-x86_64.rpm
 
+git clone https://github.com/anbai-inc/Kibana_Hanization.git
+cd Kibana_Hanization/
+sudo python ./main.py /usr/share/kibana
+
+
 # 启动 
 sudo systemctl start kibana
 
