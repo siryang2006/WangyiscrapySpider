@@ -3,7 +3,6 @@
 # -*- coding: utf-8 -*-
 from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import CrawlSpider,Rule
-from scrapy.linkextractors.sgml import SgmlLinkExtractor
 
 import scrapy
 from es import ElasticObj 
@@ -20,8 +19,6 @@ from elasticsearch.helpers import bulk
 class WangyiscrapySpider(scrapy.Spider):
     name = 'wangyiScrapy'
     handle_httpstatus_list = [404, 301]
-    scrapyed_urls_set = {};
-    to_scrapy_urls_set = {};
     es_obj = ElasticObj()
     url_object = UrlObject()
 
@@ -35,32 +32,17 @@ class WangyiscrapySpider(scrapy.Spider):
     #}
 
     def parse(self, response):
-        if response.url not in self.scrapyed_urls_set:
-            self.scrapyed_urls_set[response.url] = 1
-        if response.url in self.to_scrapy_urls_set:
-            self.to_scrapy_urls_set.pop(response.url)
-        #json = "{'url' : "+response.url+",'html': "+response.body.decode('gbk')+"}";
-        #print(json)
-
-#        if response.url.find(".htm") != -1:
-#            print(response.url)
-            #print response.body.decode('gbk')
-            #self.es_obj.insert(response.url, response.body.decode('gbk'))
-
         if response.url.find(".htm") != -1:
             self.url_object.scrapyed(response.url);
             self.parse_html_and_insert_to_es(response)
 
         urls = response.xpath('//a/@href').extract()
         for i in range(0, len(urls)):
-            #self.url_object.insert(urls[i]);
             if urls[i].find(self.allowed_domains[0]) != -1:
-                if urls[i] not in self.scrapyed_urls_set and urls[i] not in self.to_scrapy_urls_set:
-                    self.url_object.toScrapyed(urls[i])
+                self.url_object.toScrapyed(urls[i])
       
         nextUrl = self.url_object.getNextUrl();
-        yield scrapy.Request(url = nextUrl, callback = self.parse)
-        yield scrapy.Request(url = list(self.to_scrapy_urls_set.keys())[0], callback = self.parse, dont_filter = True)
+        yield scrapy.Request(url = nextUrl, callback = self.parse, dont_filter = True)
 
     def parse_html_and_insert_to_es(self, response):
         selector = Selector(response)
