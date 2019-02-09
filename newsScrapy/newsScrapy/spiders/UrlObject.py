@@ -7,12 +7,12 @@ import redis
 
 class UrlObject:
     def __init__(self):
-        print redis.__file__
+        print(redis.__file__)
         self.client =  redis.Redis(host='localhost', port=6379, decode_responses=True) 
 
     def getNextUrl(self):
-        print self.client.ping()
+        print(self.client.ping())
 
     def insert(self, url):
         self.client.sadd("urls", url)
-        print url
+        print(url)
