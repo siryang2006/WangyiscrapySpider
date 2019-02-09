@@ -20,9 +20,5 @@ class ElasticObj:
             "body":body
         }
 
-        print(data);
+        #print(data);
         self.es.index(index="html-index", doc_type="html", id=url, body=data)
-
-#obj = ElasticObj()
-#obj.insert("testurl", "test html<body></body>");
-
