@@ -58,8 +58,9 @@ wget https://artifacts.elastic.co/downloads/kibana/kibana-6.1.0-x86_64.rpm
 sudo rpm -ivh kibana-6.1.0-x86_64.rpm
 
 git clone https://github.com/anbai-inc/Kibana_Hanization.git
-cd Kibana_Hanization/
+cd Kibana_Hanization
 sudo python ./main.py /usr/share/kibana
+sudo rm -rf ../Kibana_Hanization
 
 
 # 启动 
