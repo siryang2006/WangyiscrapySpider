@@ -7,7 +7,7 @@ import redis
 
 class UrlObject:
     def __init__(self):
-        print(redis.__file__)
+        print redis.__file__
         self.client =  redis.Redis(host='localhost', port=6379, decode_responses=True) 
 
     def getNextUrl(self):
