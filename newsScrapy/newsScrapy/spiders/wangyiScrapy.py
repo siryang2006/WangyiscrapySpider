@@ -42,7 +42,7 @@ class WangyiscrapySpider(scrapy.Spider):
                 self.url_object.toScrapyed(urls[i])
       
         nextUrl = self.url_object.getNextUrl();
-        yield scrapy.Request(url = nextUrl, callback = self.parse, dont_filter = True)
+        yield scrapy.Request(url = nextUrl, callback = self.parse, dont_filter = False)
 
     def parse_html_and_insert_to_es(self, response):
         selector = Selector(response)
